@@ -1,23 +1,33 @@
 const express = require('express')
-const mongo = require('mongoose')
-const PORT = process.env.PORT || 5000
-const authRouter = require('./authRouter')
-const urlForConnect = 'mongodb+srv://miraplay:Miraplay169@cluster0.940itxn.mongodb.net/miraplay?retryWrites=true&w=majority'
-var cors = require('cors')
 const app = express()
+const WsServer=require('express-ws')(app)
 
-app.use(cors())
+const PORT = process.env.PORT || 5000
 
-app.use(express.json())
-app.use('/auth', authRouter)
+app.listen(PORT, ()=>{
+    console.log('server started');
+})
 
+app.ws('/',(ws, res)=>{
+    console.log('ws connected');
+    ws.on('message', (message)=>{
+        console.log(message);
+    })
+    ws.send(`ты отправил сообщение: ${message}`)
+    
+})
+// для ФРОНТА
 
-const start = async () => {
-    try {
-        await mongo.connect(urlForConnect)
-        app.listen(PORT, () => console.log("server started"))
-    } catch (error) {
-        console.log(error);
-    }
-}
-start()
+// const socket = new WebSocket("ws://localhost:5000/");
+//   socket.onopen = () => {
+//     console.log("sock was open");
+//   };
+//   //принимаем сообщение с сервера
+//   socket.onmessage = (event) => {
+//     console.log("С сервера пришло сообщение:", event.data);
+//   };
+//   //отправляем сообщение на сервер
+
+// socket.send("this is message for server");
+//             console.log('click');
+          
